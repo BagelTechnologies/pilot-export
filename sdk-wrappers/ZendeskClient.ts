@@ -74,7 +74,7 @@ export class ZendeskClient {
             await callback(body, nextPage, result?.end_time)
           }
         },
-        complete(statusList: any, body: any /* , responseList, resultList */) {
+        complete(statusList: any/*, body: any, responseList, resultList */) {
           resolve(statusList)
         },
       };
@@ -94,12 +94,12 @@ export class ZendeskClient {
             await callback(body, nextPage, result?.end_time)
           }
         },
-        complete(statusList: any, body: any /* , responseList, resultList */) {
+        complete(statusList: any/*, body: any, responseList, resultList */) {
           resolve(statusList)
         },
       };
       const since = Math.floor((params?.since || DEFAULT_FIRST_IMPORT_DATE).getTime() / 1000)
-      const result: any = await this.sdk.tickets.incrementalInclude(since, ['users', 'organizations', 'metric_sets','comment_count', 'ticket_forms', 'brands', 'groups'], observer);
+      await this.sdk.tickets.incrementalInclude(since, ['users', 'organizations', 'metric_sets','comment_count', 'ticket_forms', 'brands', 'groups'], observer);
     })
   }
 
