@@ -53,14 +53,7 @@ export const importZendeskToCsv = async (username: string, accessToken: string, 
   const convertJsonToCsv = (jsonObject: any): string => {
     try {
       const fields = Object.keys(jsonObject[0]);
-      const opts = { fields, transforms: [(item: any) => {
-          for (const key in item) {
-            if (typeof item[key] === 'object') {
-              item[key] = JSON.stringify(item[key]);
-            }
-          }
-          return item;
-        }]};
+      const opts = { fields };
       const parser = new Parser(opts);
       return parser.parse(jsonObject);
     } catch (err) {
@@ -77,6 +70,9 @@ export const importZendeskToCsv = async (username: string, accessToken: string, 
       console.error(`Error saving CSV to file`, err);
     }
   };
-  const csvString = convertJsonToCsv(Object.values(filteredTicketsMap))
-  await saveCsvToFile(csvString, 'output.csv');
+  const values = Object.values(filteredTicketsMap)
+  if (values.length > 0) {
+    const csvString = convertJsonToCsv(values)
+    await saveCsvToFile(csvString, 'output.csv');
+  }
 }
