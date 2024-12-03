@@ -82,14 +82,12 @@ export const importZendeskToCsv = async (username: string, accessToken: string, 
         }
       } else if (event.child_events?.length > 0) {
         event.child_events?.forEach((childEvent: any) => {
-          if (childEvent.event_type === "Comment") {
-            if (ticketIds.includes(event.ticket_id)) {
-              if (filteredTicketsMap[event.ticket_id]) {
-                if (!filteredTicketsMap[event.ticket_id].comments) {
-                  filteredTicketsMap[event.ticket_id].comments = []
-                }
-                filteredTicketsMap[event.ticket_id].comments.push(event)
+          if (childEvent.type === "Comment") {
+            if (filteredTicketsMap[event.ticket_id]) {
+              if (!filteredTicketsMap[event.ticket_id].comments) {
+                filteredTicketsMap[event.ticket_id].comments = []
               }
+              filteredTicketsMap[event.ticket_id].comments.push(event)
             }
           }
         })
@@ -104,11 +102,9 @@ export const importZendeskToCsv = async (username: string, accessToken: string, 
       const fields = Object.keys(jsonObject[0]);
       const opts = { fields, transforms: [(item: any) => {
           for (const key in item) {
-            // if (typeof item[key] === 'object') {
-            //   item[key] = JSON.stringify(item[key]);
-            // } else {
-              item[key] = item[key];
-            // }
+            if (typeof item[key] === 'object') {
+              item[key] = JSON.stringify(item[key]);
+            }
           }
           return item;
         }]};
